@@ -14,7 +14,6 @@ router.get("/", async (_req, res) => {
     res.json(customers);
   } catch (error) {
     console.error(error);
-
     res.status(500).json({
       message: "Failed to fetch customers",
     });
@@ -26,9 +25,10 @@ router.post("/", async (req, res) => {
     const { name, mobile } = req.body;
 
     if (!name) {
-      return res.status(400).json({
+      res.status(400).json({
         message: "Customer name is required",
       });
+      return;
     }
 
     const customer = await prisma.customer.create({
@@ -42,7 +42,6 @@ router.post("/", async (req, res) => {
     res.status(201).json(customer);
   } catch (error) {
     console.error(error);
-
     res.status(500).json({
       message: "Failed to create customer",
     });
