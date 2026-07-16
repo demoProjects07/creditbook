@@ -20,6 +20,31 @@ router.get("/", async (_req, res) => {
   }
 });
 
+router.get("/:id", async (req, res) => {
+  try {
+    const customer = await prisma.customer.findUnique({
+      where: {
+        id: req.params.id,
+      },
+    });
+
+    if (!customer) {
+      res.status(404).json({
+        message: "Customer not found",
+      });
+      return;
+    }
+
+    res.json(customer);
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      message: "Failed to fetch customer",
+    });
+  }
+});
+
 router.post("/", async (req, res) => {
   try {
     const { name, mobile } = req.body;

@@ -1,7 +1,8 @@
 export interface Customer {
   id: string;
+  customerCode: string;
   name: string;
   mobile?: string;
-  photo?: string;
-  outstanding: number;
+  photo?: string | null;
+  createdAt: string;
 }

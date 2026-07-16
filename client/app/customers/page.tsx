@@ -1,8 +1,31 @@
+"use client";
+
 import AppLayout from "@/components/layout/AppLayout";
+import { useEffect, useState } from "react";
 import CustomerCard from "@/features/customers/components/CustomerCard";
-import { customers } from "@/features/customers/data/customers";
+import { getCustomers } from "@/services/customer.service";
+import AddCustomerDialog from "@/features/customers/components/AddCustomerDialog";
 
 export default function CustomersPage() {
+  const [customers, setCustomers] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  async function loadCustomers() {
+    try {
+      setLoading(true);
+
+      const data = await getCustomers();
+
+      setCustomers(data);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    loadCustomers();
+  }, []);
   return (
     <AppLayout>
       <div className="space-y-6">
@@ -16,9 +39,9 @@ export default function CustomersPage() {
             </p>
           </div>
 
-          <button className="rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700">
-            + Add Customer
-          </button>
+          <AddCustomerDialog
+            onCustomerAdded={loadCustomers}
+          />
         </div>
 
         {/* Search */}
@@ -27,15 +50,20 @@ export default function CustomersPage() {
           placeholder="Search customer..."
           className="w-full rounded-lg border border-gray-300 px-4 py-3"
         />
-
+        {loading && (
+          <p className="text-gray-500">
+            Loading customers...
+          </p>
+        )}
         {/* Customer List */}
         <div className="space-y-4">
-          {customers.map((customer) => (
-            <CustomerCard
-              key={customer.id}
-              customer={customer}
-            />
-          ))}
+          {!loading &&
+            customers.map((customer) => (
+              <CustomerCard
+                key={customer.id}
+                customer={customer}
+              />
+            ))}
         </div>
       </div>
     </AppLayout>
