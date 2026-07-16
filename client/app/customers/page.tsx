@@ -1,4 +1,6 @@
 import AppLayout from "@/components/layout/AppLayout";
+import CustomerCard from "@/features/customers/components/CustomerCard";
+import { customers } from "@/features/customers/data/customers";
 
 export default function CustomersPage() {
   return (
@@ -8,6 +10,7 @@ export default function CustomersPage() {
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-3xl font-bold">Customers</h2>
+
             <p className="text-gray-600">
               Manage all customers and their outstanding balances.
             </p>
@@ -25,15 +28,14 @@ export default function CustomersPage() {
           className="w-full rounded-lg border border-gray-300 px-4 py-3"
         />
 
-        {/* Empty State */}
-        <div className="rounded-xl border bg-white p-10 text-center">
-          <h3 className="text-xl font-semibold">
-            No customers yet
-          </h3>
-
-          <p className="mt-2 text-gray-500">
-            Click "Add Customer" to create your first customer.
-          </p>
+        {/* Customer List */}
+        <div className="space-y-4">
+          {customers.map((customer) => (
+            <CustomerCard
+              key={customer.id}
+              customer={customer}
+            />
+          ))}
         </div>
       </div>
     </AppLayout>
