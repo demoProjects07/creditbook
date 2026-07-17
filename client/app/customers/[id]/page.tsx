@@ -1,18 +1,42 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
+
 import AppLayout from "@/components/layout/AppLayout";
+
 import { getCustomer } from "@/services/customer.service";
+import { getBills } from "@/services/bill.service";
 
-type Props = {
-  params: Promise<{
-    id: string;
-  }>;
-};
+import BillCard from "@/features/bills/components/BillCard";
+import AddBillDialog from "@/features/bills/components/AddBillDialog";
 
-export default async function CustomerDetailsPage({
-  params,
-}: Props) {
-  const { id } = await params;
+export default function CustomerDetailsPage() {
 
-  const customer = await getCustomer(id);
+  const { id } = useParams<{ id: string }>();
+  const [customer, setCustomer] = useState<any>(null);
+  const [bills, setBills] = useState<any[]>([]);
+
+  async function loadCustomer() {
+    if (!id) return;
+
+    const customerData = await getCustomer(id);
+    setCustomer(customerData);
+    const billData = await getBills(id);
+    setBills(billData);
+  }
+
+  useEffect(() => {
+    loadCustomer();
+  }, [id]);
+
+  if (!customer) {
+    return (
+      <AppLayout>
+        <p>Loading...</p>
+      </AppLayout>
+    );
+  }
 
   return (
     <AppLayout>
@@ -38,6 +62,31 @@ export default async function CustomerDetailsPage({
 
         </div>
 
+        <div className="mb-4 flex items-center justify-between">
+          <h2 className="text-2xl font-bold">
+            Bills
+          </h2>
+
+          <AddBillDialog
+              customerId={id}
+              onBillAdded={loadCustomer}
+            />
+        </div>
+
+        {bills.length === 0 ? (
+          <p className="text-gray-500">
+            No bills found.
+          </p>
+        ) : (
+          <div className="space-y-3">
+            {bills.map((bill: any) => (
+              <BillCard
+                key={bill.id}
+                bill={bill}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </AppLayout>
   );

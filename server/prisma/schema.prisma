@@ -14,4 +14,29 @@ model Customer {
   mobile       String?
   photo        String?
   createdAt    DateTime @default(now())
+
+  bills        Bill[]
+  payments     Payment[]
 }
+
+model Bill {
+  id         String   @id @default(cuid())
+  amount     Float
+  note       String?
+  billDate   DateTime @default(now())
+  createdAt  DateTime @default(now())
+  customerId String
+  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+}
+
+model Payment {
+  id         String   @id @default(cuid())
+  amount     Float
+  note       String?
+  paymentDate DateTime @default(now())
+  createdAt  DateTime @default(now())
+  
+  customerId String
+  customer Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+}
+
