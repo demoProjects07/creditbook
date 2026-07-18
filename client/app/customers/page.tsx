@@ -8,6 +8,7 @@ import AddCustomerDialog from "@/features/customers/components/AddCustomerDialog
 
 export default function CustomersPage() {
   const [customers, setCustomers] = useState<any[]>([]);
+  const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
   async function loadCustomers() {
     try {
@@ -26,6 +27,12 @@ export default function CustomersPage() {
   useEffect(() => {
     loadCustomers();
   }, []);
+  
+  const filteredCustomers = customers.filter((customer) =>
+    customer.name.toLowerCase().includes(search.toLowerCase()) ||
+    customer.customerCode.toLowerCase().includes(search.toLowerCase()) ||
+    (customer.mobile || "").includes(search)
+  );
   return (
     <AppLayout>
       <div className="space-y-6">
@@ -43,13 +50,16 @@ export default function CustomersPage() {
             onCustomerAdded={loadCustomers}
           />
         </div>
-
         {/* Search */}
-        <input
-          type="text"
-          placeholder="Search customer..."
-          className="w-full rounded-lg border border-gray-300 px-4 py-3"
-        />
+        <div className="mt-4">
+          <input
+            type="text"
+            placeholder="🔍 Search by name, mobile or customer code..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full rounded-lg border p-3 outline-none focus:border-blue-500"
+          />
+        </div>
         {loading && (
           <p className="text-gray-500">
             Loading customers...
@@ -57,13 +67,18 @@ export default function CustomersPage() {
         )}
         {/* Customer List */}
         <div className="space-y-4">
-          {!loading &&
-            customers.map((customer) => (
+          {!loading && filteredCustomers.length === 0 ? (
+            <p className="text-gray-500">
+              No customers found.
+            </p>
+          ) : (
+            filteredCustomers.map((customer) => (
               <CustomerCard
                 key={customer.id}
                 customer={customer}
               />
-            ))}
+            ))
+          )}
         </div>
       </div>
     </AppLayout>

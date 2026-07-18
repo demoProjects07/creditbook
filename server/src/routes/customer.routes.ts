@@ -1,19 +1,50 @@
 import { Router } from "express";
 import prisma from "../prisma/client";
+import { authenticate } from "../middleware/auth.middleware";
 
 const router = Router();
+router.use(authenticate);
 
 router.get("/", async (_req, res) => {
   try {
     const customers = await prisma.customer.findMany({
+      include: {
+        bills: true,
+        payments: true,
+      },
       orderBy: {
         createdAt: "desc",
       },
     });
 
-    res.json(customers);
+    const result = customers.map((customer) => {
+      const totalBills = customer.bills.reduce(
+        (sum, bill) => sum + bill.amount,
+        0
+      );
+
+      const totalPayments = customer.payments.reduce(
+        (sum, payment) => sum + payment.amount,
+        0
+      );
+
+      return {
+        id: customer.id,
+        customerCode: customer.customerCode,
+        name: customer.name,
+        mobile: customer.mobile,
+        photo: customer.photo,
+        createdAt: customer.createdAt,
+        totalBills,
+        totalPayments,
+        outstanding: totalBills - totalPayments,
+      };
+    });
+
+    res.json(result);
   } catch (error) {
     console.error(error);
+
     res.status(500).json({
       message: "Failed to fetch customers",
     });
@@ -26,6 +57,10 @@ router.get("/:id", async (req, res) => {
       where: {
         id: req.params.id,
       },
+      include: {
+        bills: true,
+        payments: true,
+      },
     });
 
     if (!customer) {
@@ -35,7 +70,25 @@ router.get("/:id", async (req, res) => {
       return;
     }
 
-    res.json(customer);
+    const totalBills = customer.bills.reduce(
+      (sum, bill) => sum + bill.amount,
+      0
+    );
+
+    const totalPayments = customer.payments.reduce(
+      (sum, payment) => sum + payment.amount,
+      0
+    );
+
+    const outstanding = totalBills - totalPayments;
+
+    res.json({
+      ...customer,
+      totalBills,
+      totalPayments,
+      outstanding,
+    });
+
   } catch (error) {
     console.error(error);
 

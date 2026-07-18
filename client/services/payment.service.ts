@@ -1,8 +1,9 @@
+import { apiFetch } from "@/lib/api";
 const API_URL =
   `${process.env.NEXT_PUBLIC_API_URL}/api/payments`;
 
 export async function getPayments(customerId: string) {
-  const response = await fetch(
+  const response = await apiFetch(
     `${API_URL}/customer/${customerId}`
   );
 
@@ -18,7 +19,7 @@ export async function createPayment(data: {
   amount: number;
   note?: string;
 }) {
-  const response = await fetch(API_URL, {
+  const response = await apiFetch(API_URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -28,6 +29,43 @@ export async function createPayment(data: {
 
   if (!response.ok) {
     throw new Error("Failed to create payment");
+  }
+
+  return response.json();
+}
+
+export async function deletePayment(id: string) {
+  const response = await apiFetch(
+    `${API_URL}/${id}`,
+    {
+      method: "DELETE",
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to delete payment");
+  }
+
+  return response.json();
+}
+
+export async function updatePayment(
+  id: string,
+  data: {
+    amount: number;
+    note?: string;
+  }
+) {
+  const response = await apiFetch(`${API_URL}/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to update payment");
   }
 
   return response.json();

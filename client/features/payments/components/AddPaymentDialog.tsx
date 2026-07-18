@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-import { createPayment } from "@/services/bill.service";
+import { createPayment } from "@/services/payment.service";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,12 +18,12 @@ import {
 
 type Props = {
   customerId: string;
-  onBillAdded: () => void;
+  onPaymentAdded: () => void;
 };
 
 export default function AddPaymentDialog({
   customerId,
-  onBillAdded,
+  onPaymentAdded,
 }: Props) {
   const [open, setOpen] = useState(false);
   const [amount, setAmount] = useState("");
@@ -50,10 +50,10 @@ export default function AddPaymentDialog({
 
       setOpen(false);
 
-      onBillAdded();
+      onPaymentAdded();
     } catch (error) {
       console.error(error);
-      alert("Failed to create bill");
+      alert("Failed to create payment");
     } finally {
       setLoading(false);
     }
@@ -95,7 +95,7 @@ export default function AddPaymentDialog({
             onClick={handleSubmit}
             disabled={loading}
           >
-            {loading ? "Saving..." : "Save Bill"}
+            {loading ? "Saving..." : "Save Payment"}
           </Button>
         </div>
       </DialogContent>

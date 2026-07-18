@@ -40,7 +40,7 @@ export default function CustomerCard({
             </p>
 
             <p className="text-2xl font-bold text-red-600">
-              ₹0
+              ₹{customer.outstanding.toLocaleString()}
             </p>
           </div>
 

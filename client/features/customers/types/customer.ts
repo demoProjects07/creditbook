@@ -4,5 +4,8 @@ export interface Customer {
   name: string;
   mobile?: string;
   photo?: string | null;
-  createdAt: string;
+
+  totalBills: number;
+  totalPayments: number;
+  outstanding: number;
 }

@@ -1,8 +1,9 @@
 import { Router } from "express";
 import prisma from "../prisma/client";
+import { authenticate } from "../middleware/auth.middleware";
 
 const router = Router();
-
+router.use(authenticate);
 // Create Bill
 
 router.post("/", async (req, res) => {
@@ -54,6 +55,49 @@ router.get("/customer/:customerId", async (req, res) => {
 
     res.status(500).json({
       message: "Failed to fetch bills",
+    });
+  }
+});
+
+router.delete("/:id", async (req, res) => {
+  try {
+    await prisma.bill.delete({
+      where: {
+        id: req.params.id,
+      },
+    });
+
+    res.json({
+      message: "Bill deleted successfully",
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      error: "Failed to delete bill",
+    });
+  }
+});
+
+// Update Bill
+router.put("/:id", async (req, res) => {
+  try {
+    const { amount, note } = req.body;
+
+    const bill = await prisma.bill.update({
+      where: {
+        id: req.params.id,
+      },
+      data: {
+        amount,
+        note,
+      },
+    });
+
+    res.json(bill);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      error: "Failed to update bill",
     });
   }
 });

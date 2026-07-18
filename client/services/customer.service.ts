@@ -1,7 +1,8 @@
+import { apiFetch } from "@/lib/api";
 const API_URL = `${process.env.NEXT_PUBLIC_API_URL}/api/customers`;
 
 export async function getCustomers() {
-  const response = await fetch(API_URL);
+  const response = await apiFetch(API_URL);
 
   if (!response.ok) {
     throw new Error("Failed to fetch customers");
@@ -11,7 +12,7 @@ export async function getCustomers() {
 }
 
 export async function getCustomer(id: string) {
-  const response = await fetch(`${API_URL}/${id}`);
+  const response = await apiFetch(`${API_URL}/${id}`);
 
   if (!response.ok) {
     throw new Error("Failed to fetch customer");
@@ -24,7 +25,7 @@ export async function createCustomer(data: {
   name: string;
   mobile?: string;
 }) {
-  const response = await fetch(API_URL, {
+  const response = await apiFetch(API_URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
