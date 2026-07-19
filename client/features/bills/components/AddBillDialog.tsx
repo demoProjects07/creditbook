@@ -68,7 +68,7 @@ export default function AddBillDialog({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <Button onClick={() => setOpen(true)}>
-        + Add Bill
+        + Outstanding Bill
       </Button>
 
       <DialogContent>

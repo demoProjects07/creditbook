@@ -89,7 +89,7 @@ export default function AddPaymentDialog({
       <Button
         onClick={() => setOpen(true)}
       >
-        + Add Payment
+        + Received Payment
       </Button>
 
       <DialogContent>
