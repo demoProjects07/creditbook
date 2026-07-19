@@ -6,3 +6,5 @@ npm run dev
 
 outstanding bill
 Received payment
+
+postgresql://neondb_owner:npg_KGdp6X3hFVaI@ep-green-butterfly-awnahpoo.c-12.us-east-1.aws.neon.tech/neondb?sslmode=require
