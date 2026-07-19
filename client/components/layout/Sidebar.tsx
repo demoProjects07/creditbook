@@ -20,7 +20,6 @@ export default function Sidebar() {
               🏠 Dashboard
             </Link>
           </li>
-
           <li>
             <Link
               href="/customers"
@@ -32,13 +31,21 @@ export default function Sidebar() {
 
           <li>
             <Link
+              href="/customers/archived"
+              className="block rounded-lg p-3 hover:bg-blue-800"
+            >
+              📦 Archived Customers
+            </Link>
+          </li>
+
+          <li>
+            <Link
               href="/reports"
               className="block rounded-lg p-3 hover:bg-blue-800"
             >
               📊 Reports
             </Link>
           </li>
-
           <li>
             <Link
               href="/settings"

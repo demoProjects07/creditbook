@@ -28,7 +28,7 @@ export default function AddCustomerDialog({
   const [name, setName] = useState("");
 
   const [mobile, setMobile] = useState("");
-
+  const [photo, setPhoto] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
 
   async function handleSubmit() {
@@ -40,14 +40,20 @@ export default function AddCustomerDialog({
     try {
       setLoading(true);
 
-      await createCustomer({
-        name,
-        mobile,
-      });
+      const formData = new FormData();
+
+      formData.append("name", name);
+      formData.append("mobile", mobile);
+
+      if (photo) {
+        formData.append("photo", photo);
+      }
+
+      await createCustomer(formData);
 
       setName("");
       setMobile("");
-
+      setPhoto(null);
       setOpen(false);
 
       onCustomerAdded();
@@ -91,6 +97,26 @@ export default function AddCustomerDialog({
               onChange={(e) => setMobile(e.target.value)}
               placeholder="Mobile number"
             />
+          </div>
+
+          <div>
+            <Label>Photo</Label>
+
+            <Input
+              type="file"
+              accept="image/*"
+              onChange={(e) =>
+                setPhoto(e.target.files?.[0] || null)
+              }
+            />
+
+            {photo && (
+              <img
+                src={URL.createObjectURL(photo)}
+                alt="Preview"
+                className="mt-3 h-24 w-24 rounded-lg object-cover border"
+              />
+            )}
           </div>
 
           <Button

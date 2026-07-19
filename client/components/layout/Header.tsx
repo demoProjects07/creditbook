@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 
 import { search } from "@/services/search.service";
+import { useRouter } from "next/navigation";
 
 export default function Header() {
   const [query, setQuery] = useState("");
@@ -14,6 +15,18 @@ export default function Header() {
     payments: [],
   });
   const searchRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
+
+  function handleLogout() {
+    const confirmed = confirm("Are you sure you want to logout?");
+
+    if (!confirmed) return;
+
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+
+    router.replace("/login");
+  }
 
   function handleSearch(value: string) {
     setQuery(value);
@@ -203,8 +216,17 @@ useEffect(() => {
       </div>
 
       {/* Right Side */}
-      <div className="font-medium text-gray-700">
-        Admin
+      <div className="flex items-center gap-4">
+        <span className="font-medium text-gray-700">
+          Admin
+        </span>
+
+        <button
+          onClick={handleLogout}
+          className="rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700"
+        >
+          Logout
+        </button>
       </div>
     </header>
   );

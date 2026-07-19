@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "public"."Bill" ADD COLUMN     "paidAmount" DOUBLE PRECISION NOT NULL DEFAULT 0,
+ADD COLUMN     "status" TEXT NOT NULL DEFAULT 'UNPAID';

@@ -13,6 +13,8 @@ model Customer {
   name         String
   mobile       String?
   photo        String?
+  isActive      Boolean  @default(true)
+
   createdAt    DateTime @default(now())
 
   bills        Bill[]
@@ -21,23 +23,38 @@ model Customer {
 
 model Bill {
   id         String   @id @default(cuid())
-  amount     Float
-  note       String?
-  billDate   DateTime @default(now())
-  createdAt  DateTime @default(now())
   customerId String
   customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  amount     Float
+  paidAmount Float    @default(0)
+  status     String   @default("UNPAID")
+
+  note       String?
+
+  attachment         String?
+  attachmentOriginal String?
+
+  billDate   DateTime @default(now())
+  createdAt  DateTime @default(now())
+
+  payments   Payment[]
 }
 
 model Payment {
-  id         String   @id @default(cuid())
-  amount     Float
-  note       String?
+  id          String   @id @default(cuid())
+
+  amount      Float
+  note        String?
+
   paymentDate DateTime @default(now())
-  createdAt  DateTime @default(now())
-  
-  customerId String
-  customer Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+
+  customerId  String
+  customer    Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  billId      String?
+  bill        Bill? @relation(fields: [billId], references: [id], onDelete: Cascade)
 }
 
 model User {

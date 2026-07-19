@@ -1,4 +1,5 @@
 import { apiFetch } from "@/lib/api";
+
 const API_URL = `${process.env.NEXT_PUBLIC_API_URL}/api/bills`;
 
 export async function getBills(customerId: string) {
@@ -15,13 +16,24 @@ export async function createBill(data: {
   customerId: string;
   amount: number;
   note?: string;
+  attachment?: File | null;
 }) {
+  const formData = new FormData();
+
+  formData.append("customerId", data.customerId);
+  formData.append("amount", data.amount.toString());
+
+  if (data.note) {
+    formData.append("note", data.note);
+  }
+
+  if (data.attachment) {
+    formData.append("attachment", data.attachment);
+  }
+
   const response = await apiFetch(API_URL, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
+    body: formData,
   });
 
   if (!response.ok) {
@@ -32,12 +44,9 @@ export async function createBill(data: {
 }
 
 export async function deleteBill(id: string) {
-  const response = await apiFetch(
-    `${API_URL}/${id}`,
-    {
-      method: "DELETE",
-    }
-  );
+  const response = await apiFetch(`${API_URL}/${id}`, {
+    method: "DELETE",
+  });
 
   if (!response.ok) {
     throw new Error("Failed to delete bill");
@@ -51,14 +60,24 @@ export async function updateBill(
   data: {
     amount: number;
     note?: string;
+    attachment?: File | null;
   }
 ) {
+  const formData = new FormData();
+
+  formData.append("amount", data.amount.toString());
+
+  if (data.note) {
+    formData.append("note", data.note);
+  }
+
+  if (data.attachment) {
+    formData.append("attachment", data.attachment);
+  }
+
   const response = await apiFetch(`${API_URL}/${id}`, {
     method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
+    body: formData,
   });
 
   if (!response.ok) {

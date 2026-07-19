@@ -4,13 +4,19 @@ export async function apiFetch(
 ) {
   const token = localStorage.getItem("token");
 
+  const headers: HeadersInit = {
+    Authorization: token ? `Bearer ${token}` : "",
+    ...(options.headers || {}),
+  };
+
+  // Only add Content-Type when NOT sending FormData
+  if (!(options.body instanceof FormData)) {
+    headers["Content-Type"] = "application/json";
+  }
+
   const response = await fetch(url, {
     ...options,
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: token ? `Bearer ${token}` : "",
-      ...(options.headers || {}),
-    },
+    headers,
   });
 
   if (response.status === 401) {

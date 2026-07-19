@@ -16,6 +16,7 @@ export async function getPayments(customerId: string) {
 
 export async function createPayment(data: {
   customerId: string;
+  billId: string;
   amount: number;
   note?: string;
 }) {
@@ -52,6 +53,7 @@ export async function deletePayment(id: string) {
 export async function updatePayment(
   id: string,
   data: {
+    billId?: string;
     amount: number;
     note?: string;
   }

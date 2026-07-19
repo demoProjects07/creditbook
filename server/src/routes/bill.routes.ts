@@ -1,12 +1,16 @@
 import { Router } from "express";
 import prisma from "../prisma/client";
 import { authenticate } from "../middleware/auth.middleware";
+import upload from "../config/multer";
 
 const router = Router();
 router.use(authenticate);
 // Create Bill
 
-router.post("/", async (req, res) => {
+router.post(
+  "/",
+  upload.single("attachment"),
+  async (req, res) => {
   try {
     const { customerId, amount, note } = req.body;
 
@@ -25,6 +29,8 @@ router.post("/", async (req, res) => {
         customerId,
         amount: Number(amount),
         note,
+        attachment: req.file?.filename || null,
+        attachmentOriginal: req.file?.originalname || null,
       },
     });
 
@@ -79,17 +85,36 @@ router.delete("/:id", async (req, res) => {
 });
 
 // Update Bill
-router.put("/:id", async (req, res) => {
+router.put(
+  "/:id",
+  upload.single("attachment"),
+  async (req, res) => {
   try {
     const { amount, note } = req.body;
+
+    const existingBill = await prisma.bill.findUnique({
+      where: {
+        id: req.params.id,
+      },
+    });
 
     const bill = await prisma.bill.update({
       where: {
         id: req.params.id,
       },
       data: {
-        amount,
+        amount: Number(amount),
         note,
+
+        attachment:
+          req.file?.filename ??
+          existingBill?.attachment ??
+          null,
+
+        attachmentOriginal:
+          req.file?.originalname ??
+          existingBill?.attachmentOriginal ??
+          null,
       },
     });
 

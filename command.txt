@@ -3,3 +3,6 @@ PS D:\Projects\creditbook\server> npx prisma studio
 
 --- To start client/server
 npm run dev
+
+outstanding bill
+Received payment
