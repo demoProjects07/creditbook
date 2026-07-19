@@ -120,13 +120,13 @@ router.put(
 
     const existingBill = await prisma.bill.findUnique({
       where: {
-        id: req.params.id,
+        id: String(req.params.id),
       },
     });
 
     const bill = await prisma.bill.update({
       where: {
-        id: req.params.id,
+        id: String(req.params.id),
       },
       data: {
         amount: Number(amount),

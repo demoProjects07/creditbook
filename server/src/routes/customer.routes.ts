@@ -187,7 +187,7 @@ router.put(
 
       const existingCustomer = await prisma.customer.findUnique({
         where: {
-          id: req.params.id,
+          id: String(req.params.id),
         },
       });
 
@@ -218,7 +218,7 @@ router.put(
 
       const customer = await prisma.customer.update({
         where: {
-          id: req.params.id,
+          id: String(req.params.id),
         },
         data: {
           name,
