@@ -4,14 +4,15 @@ export async function apiFetch(
 ) {
   const token = localStorage.getItem("token");
 
-  const headers: Record<string, string> = {
-    Authorization: token ? `Bearer ${token}` : "",
-    ...(options.headers || {}),
-  };
+  const headers = new Headers(options.headers);
+
+  if (token) {
+    headers.set("Authorization", `Bearer ${token}`);
+  }
 
   // Only add Content-Type when NOT sending FormData
   if (!(options.body instanceof FormData)) {
-    headers["Content-Type"] = "application/json";
+    headers.set("Content-Type", "application/json");
   }
 
   const response = await fetch(url, {
