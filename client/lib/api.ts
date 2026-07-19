@@ -4,7 +4,7 @@ export async function apiFetch(
 ) {
   const token = localStorage.getItem("token");
 
-  const headers: HeadersInit = {
+  const headers: Record<string, string> = {
     Authorization: token ? `Bearer ${token}` : "",
     ...(options.headers || {}),
   };
