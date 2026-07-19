@@ -67,19 +67,45 @@ router.get("/customer/:customerId", async (req, res) => {
 
 router.delete("/:id", async (req, res) => {
   try {
-    await prisma.bill.delete({
+    const bill = await prisma.bill.findUnique({
       where: {
         id: req.params.id,
       },
+      include: {
+        payments: true,
+      },
+    });
+
+    if (!bill) {
+      return res.status(404).json({
+        message: "Bill not found",
+      });
+    }
+
+    await prisma.$transaction(async (tx) => {
+      // Delete all payments of this bill
+      await tx.payment.deleteMany({
+        where: {
+          billId: bill.id,
+        },
+      });
+
+      // Delete the bill
+      await tx.bill.delete({
+        where: {
+          id: bill.id,
+        },
+      });
     });
 
     res.json({
-      message: "Bill deleted successfully",
+      message: "Bill and related payments deleted successfully",
     });
   } catch (error) {
     console.error(error);
+
     res.status(500).json({
-      error: "Failed to delete bill",
+      message: "Failed to delete bill",
     });
   }
 });

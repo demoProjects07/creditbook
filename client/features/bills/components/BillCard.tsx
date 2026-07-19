@@ -198,12 +198,7 @@ export default function BillCard({
 
           <button
             onClick={() => onDelete(bill.id)}
-            disabled={bill.paidAmount > 0}
-            className={`rounded px-3 py-2 text-white ${
-              bill.paidAmount > 0
-                ? "cursor-not-allowed bg-gray-400"
-                : "bg-red-600 hover:bg-red-700"
-            }`}
+            className="rounded bg-red-600 px-3 py-2 text-white hover:bg-red-700"
           >
             Delete
           </button>

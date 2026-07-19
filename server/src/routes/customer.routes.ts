@@ -59,10 +59,9 @@ router.get("/", async (_req, res) => {
 
 router.get("/:id", async (req, res) => {
   try {
-    const customer = await prisma.customer.findFirst({
+    const customer = await prisma.customer.findUnique({
       where: {
         id: req.params.id,
-        isActive: true,
       },
       include: {
         bills: {
@@ -74,7 +73,6 @@ router.get("/:id", async (req, res) => {
             },
           },
         },
-
         payments: {
           include: {
             bill: true,

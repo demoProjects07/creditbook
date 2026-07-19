@@ -8,6 +8,9 @@ router.use(authenticate);
 router.get("/", async (req, res) => {
   try {
     const customers = await prisma.customer.findMany({
+      where: {
+        isActive: true,
+      },
       include: {
         bills: true,
         payments: true,
@@ -47,9 +50,11 @@ router.get("/", async (req, res) => {
         },
         include: {
             customer: {
-            select: {
+              select: {
+                id: true,
                 name: true,
-            },
+                isActive: true,
+              },
             },
         },
         });
@@ -61,8 +66,10 @@ router.get("/", async (req, res) => {
         },
         include: {
             customer: {
-            select: {
+              select: {
+                id: true,
                 name: true,
+                isActive: true,
             },
             },
         },
@@ -83,6 +90,7 @@ router.get("/", async (req, res) => {
             return {
             id: customer.id,
             name: customer.name,
+            isActive: customer.isActive,
             outstanding: bills - payments,
             };
         })

@@ -1,5 +1,5 @@
 "use client";
-
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 import AppLayout from "@/components/layout/AppLayout";
@@ -55,7 +55,7 @@ export default function DashboardPage() {
 
           <div className="rounded-xl bg-red-50 p-6 shadow-sm">
             <p className="text-gray-500">
-              Bills
+              Outstanding Bills
             </p>
 
             <h2 className="mt-2 text-3xl font-bold text-red-600">
@@ -65,7 +65,7 @@ export default function DashboardPage() {
 
           <div className="rounded-xl bg-green-50 p-6 shadow-sm">
             <p className="text-gray-500">
-              Payments
+              Received Payments
             </p>
 
             <h2 className="mt-2 text-3xl font-bold text-green-600">
@@ -75,7 +75,7 @@ export default function DashboardPage() {
 
           <div className="rounded-xl bg-yellow-50 p-6 shadow-sm">
             <p className="text-gray-500">
-              Outstanding
+              Outstanding Balance
             </p>
 
             <h2 className="mt-2 text-3xl font-bold text-yellow-700">
@@ -107,10 +107,24 @@ export default function DashboardPage() {
                     className="flex items-center justify-between border-b pb-2"
                   >
                     <div>
-                      <p className="font-semibold">
-                        {bill.customer.name}
-                      </p>
+                      {bill.customer.isActive ? (
+                        <Link
+                          href={`/customers/${bill.customer.id}`}
+                          className="font-semibold text-blue-600 hover:underline"
+                        >
+                          {bill.customer.name}
+                        </Link>
+                      ) : (
+                        <div>
+                          <p className="font-semibold text-gray-500">
+                            {bill.customer.name}
+                          </p>
 
+                          <span className="rounded bg-gray-200 px-2 py-1 text-xs">
+                            Archived
+                          </span>
+                        </div>
+                      )}
                       <p className="text-sm text-gray-500">
                         {bill.note || "No note"}
                       </p>
@@ -143,10 +157,24 @@ export default function DashboardPage() {
                     key={customer.id}
                     className="flex items-center justify-between border-b pb-2"
                   >
-                    <p className="font-semibold">
-                      {customer.name}
-                    </p>
+                    {customer.isActive ? (
+                      <Link
+                        href={`/customers/${customer.id}`}
+                        className="font-semibold text-blue-600 hover:underline"
+                      >
+                        {customer.name}
+                      </Link>
+                    ) : (
+                      <div>
+                        <p className="font-semibold text-gray-500">
+                          {customer.name}
+                        </p>
 
+                        <span className="rounded bg-gray-200 px-2 py-1 text-xs">
+                          Archived
+                        </span>
+                      </div>
+                    )}
                     <p className="font-bold text-red-600">
                       ₹{customer.outstanding.toLocaleString()}
                     </p>
@@ -179,10 +207,24 @@ export default function DashboardPage() {
                   className="flex items-center justify-between border-b pb-2"
                 >
                   <div>
-                    <p className="font-semibold">
-                      {payment.customer.name}
-                    </p>
+                    {payment.customer.isActive ? (
+                      <Link
+                        href={`/customers/${payment.customer.id}`}
+                        className="font-semibold text-blue-600 hover:underline"
+                      >
+                        {payment.customer.name}
+                      </Link>
+                    ) : (
+                      <div>
+                        <p className="font-semibold text-gray-500">
+                          {payment.customer.name}
+                        </p>
 
+                        <span className="rounded bg-gray-200 px-2 py-1 text-xs">
+                          Archived
+                        </span>
+                      </div>
+                    )}
                     <p className="text-sm text-gray-500">
                       {payment.note || "Payment"}
                     </p>

@@ -38,11 +38,31 @@ export default function CustomerDetailsPage() {
   }
 
   async function handleDeleteBill(id: string) {
-    const confirmed = confirm(
-      "Delete this bill?"
-    );
+    const bill = bills.find((b) => b.id === id);
 
-    if (!confirmed) return;
+    if (!bill) return;
+
+    let message = `Delete bill of ₹${bill.amount.toLocaleString()}?`;
+
+    if (bill.payments?.length > 0) {
+      const totalPaid = bill.payments.reduce(
+        (sum: number, payment: any) => sum + payment.amount,
+        0
+      );
+
+      message += `
+
+  This bill has ${bill.payments.length} payment(s).
+
+  Total Paid: ₹${totalPaid.toLocaleString()}
+
+  Deleting this bill will also delete all related payments.
+
+  This action cannot be undone.`;
+    }
+
+    if (!confirm(message)) return;
+
     await deleteBill(id);
 
     loadCustomer();
