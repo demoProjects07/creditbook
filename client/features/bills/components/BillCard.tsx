@@ -12,9 +12,7 @@ export default function BillCard({
   onDelete,
   onUpdated,
 }: Props) {
-  const attachmentUrl = bill.attachment
-    ? `${process.env.NEXT_PUBLIC_API_URL}/uploads/${bill.attachment}`
-    : null;
+  const attachmentUrl = bill.attachment || null;
 
   const isImage =
     bill.attachment &&
