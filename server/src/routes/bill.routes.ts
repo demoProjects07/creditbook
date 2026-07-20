@@ -1,7 +1,9 @@
 import { Router } from "express";
 import prisma from "../prisma/client";
 import { authenticate } from "../middleware/auth.middleware";
-import upload from "../config/multer";
+import upload from "../middleware/upload";
+import cloudinary from "../config/cloudinary";
+import streamifier from "streamifier";
 
 const router = Router();
 router.use(authenticate);
@@ -24,13 +26,48 @@ router.post(
       });
     }
 
+    console.log(req.file);
+
+    let attachment: string | null = null;
+    let attachmentPublicId: string | null = null;
+
+    if (req.file) {
+      const result: any = await new Promise((resolve, reject) => {
+        const uploadStream = cloudinary.uploader.upload_stream(
+          {
+            folder: "creditbook",
+            resource_type:
+              req.file.mimetype === "application/pdf"
+                ? "raw"
+                : "image",
+            public_id: `${Date.now()}-${req.file.originalname}`,
+          },
+          (error, result) => {
+            if (error) {
+              return reject(error);
+            }
+
+            resolve(result);
+          }
+        );
+
+        streamifier.createReadStream(req.file.buffer).pipe(uploadStream);
+      });
+
+      attachment = result.secure_url;
+      attachmentPublicId = result.public_id;
+
+      console.log(result);
+    }
+
     const bill = await prisma.bill.create({
       data: {
         customerId,
         amount: Number(amount),
         note,
-        attachment: req.file?.filename || null,
+        attachment,
         attachmentOriginal: req.file?.originalname || null,
+        attachmentPublicId,
       },
     });
 

@@ -34,6 +34,7 @@ model Bill {
 
   attachment         String?
   attachmentOriginal String?
+  attachmentPublicId String?
 
   billDate   DateTime @default(now())
   createdAt  DateTime @default(now())
